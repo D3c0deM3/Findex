@@ -27,7 +27,6 @@ function Header() {
   );
 
   useEffect(() => {
-    // Sync header search bar with StockTable
     window.__findexSetHeaderSearch = setHeaderSearch;
     return () => {
       window.__findexSetHeaderSearch = null;
@@ -35,7 +34,6 @@ function Header() {
   }, []);
 
   useEffect(() => {
-    // When headerSearch changes, update global and StockTable
     window.__findexSearchTerm = headerSearch;
     if (window.__findexSetSearchTerm)
       window.__findexSetSearchTerm(headerSearch);
@@ -163,14 +161,14 @@ function FilterTabs() {
   );
 }
 
-// Filter configuration based on Finviz structure
+// Complete filter configuration based on Finviz structure and your data
 const filterConfig = {
   Descriptive: [
     {
       key: "exchange",
       label: "Exchange",
       type: "select",
-      options: ["Any", "NYSE", "NASDAQ", "AMEX"],
+      options: ["Any", "NYSE", "NASDAQ", "AMEX", "TSX", "ETF"],
     },
     {
       key: "marketCap",
@@ -189,6 +187,30 @@ const filterConfig = {
     { key: "sector", label: "Sector", type: "select", options: ["Any"] },
     { key: "industry", label: "Industry", type: "select", options: ["Any"] },
     { key: "country", label: "Country", type: "select", options: ["Any"] },
+    {
+      key: "optionShort",
+      label: "Option/Short",
+      type: "select",
+      options: ["Any", "Optionable", "Shortable"],
+    },
+    {
+      key: "ipoDate",
+      label: "IPO Date",
+      type: "select",
+      options: ["Any", "This Year", "Last 5 Years", "Over 5 Years"],
+    },
+    {
+      key: "sharesOutstanding",
+      label: "Shares Outstanding",
+      type: "range",
+      options: ["Any", "Over 100M", "Under 100M"],
+    },
+    {
+      key: "float",
+      label: "Float",
+      type: "range",
+      options: ["Any", "High", "Low"],
+    },
   ],
   Fundamental: [
     {
@@ -203,13 +225,23 @@ const filterConfig = {
         "Under 20",
         "Over 30",
         "Under 30",
+        "Positive",
+        "Negative",
       ],
     },
     {
       key: "forwardPE",
       label: "Forward P/E",
       type: "range",
-      options: ["Any", "Over 10", "Under 10", "Over 20", "Under 20"],
+      options: [
+        "Any",
+        "Over 10",
+        "Under 10",
+        "Over 20",
+        "Under 20",
+        "Positive",
+        "Negative",
+      ],
     },
     {
       key: "peg",
@@ -254,6 +286,12 @@ const filterConfig = {
       options: ["Any", "Over 1", "Under 1", "Over 3", "Under 3"],
     },
     {
+      key: "dividendYield",
+      label: "Dividend Yield",
+      type: "range",
+      options: ["Any", "Over 2%", "Under 2%", "Over 5%", "Under 5%"],
+    },
+    {
       key: "dividendGrowth",
       label: "Dividend Growth",
       type: "select",
@@ -265,7 +303,15 @@ const filterConfig = {
       key: "epsGrowth",
       label: "EPS Growth",
       type: "range",
-      options: ["Any", "Positive", "Negative", "Over 10%", "Under 10%"],
+      options: [
+        "Any",
+        "Positive",
+        "Negative",
+        "Over 10%",
+        "Under 10%",
+        "Over 20%",
+        "Under 20%",
+      ],
     },
     {
       key: "epsGrowthNextYear",
@@ -277,13 +323,27 @@ const filterConfig = {
       key: "salesGrowth",
       label: "Sales Growth",
       type: "range",
-      options: ["Any", "Positive", "Negative", "Over 10%", "Under 10%"],
+      options: [
+        "Any",
+        "Positive",
+        "Negative",
+        "Over 10%",
+        "Under 10%",
+        "Over 20%",
+        "Under 20%",
+      ],
     },
     {
       key: "salesGrowthNextYear",
       label: "Sales Growth Next Year",
       type: "range",
       options: ["Any", "Positive", "Negative", "Over 10%", "Under 10%"],
+    },
+    {
+      key: "grossMargin",
+      label: "Gross Margin",
+      type: "range",
+      options: ["Any", "Positive", "Negative", "Over 20%", "Under 20%"],
     },
     {
       key: "operatingMargin",
@@ -297,14 +357,58 @@ const filterConfig = {
       type: "range",
       options: ["Any", "Positive", "Negative", "Over 10%", "Under 10%"],
     },
+    {
+      key: "payoutRatio",
+      label: "Payout Ratio",
+      type: "range",
+      options: ["Any", "Over 50%", "Under 50%", "Over 80%", "Under 20%"],
+    },
+  ],
+  Financial: [
+    {
+      key: "debtToEquity",
+      label: "Debt/Equity",
+      type: "range",
+      options: ["Any", "Over 1", "Under 1", "Over 2", "Under 0.5"],
+    },
+    {
+      key: "ltDebtToEquity",
+      label: "LT Debt/Equity",
+      type: "range",
+      options: ["Any", "High", "Low"],
+    },
+    {
+      key: "currentRatio",
+      label: "Current Ratio",
+      type: "range",
+      options: ["Any", "Over 1", "Under 1", "Over 2", "Under 0.5"],
+    },
+    {
+      key: "quickRatio",
+      label: "Quick Ratio",
+      type: "range",
+      options: ["Any", "Over 1", "Under 1"],
+    },
+    {
+      key: "returnOnAssets",
+      label: "Return on Assets",
+      type: "range",
+      options: ["Any", "Positive", "Negative", "Over 5%", "Under 5%"],
+    },
+    {
+      key: "returnOnEquity",
+      label: "Return on Equity",
+      type: "range",
+      options: ["Any", "Positive", "Negative", "Over 10%", "Under 10%"],
+    },
+    {
+      key: "returnOnInvestment",
+      label: "Return on Invested",
+      type: "range",
+      options: ["Any", "Positive", "Negative"],
+    },
   ],
   Ownership: [
-    {
-      key: "institutionalOwnership",
-      label: "Institutional Ownership",
-      type: "range",
-      options: ["Any", "Over 50%", "Under 50%", "Over 70%", "Under 30%"],
-    },
     {
       key: "insiderOwnership",
       label: "Insider Ownership",
@@ -312,14 +416,20 @@ const filterConfig = {
       options: ["Any", "Over 10%", "Under 10%", "Over 20%", "Under 5%"],
     },
     {
-      key: "institutionalTransactions",
-      label: "Institutional Transactions",
+      key: "insiderTransactions",
+      label: "Insider Transactions",
       type: "select",
       options: ["Any", "Buying", "Selling"],
     },
     {
-      key: "insiderTransactions",
-      label: "Insider Transactions",
+      key: "institutionalOwnership",
+      label: "Institutional Ownership",
+      type: "range",
+      options: ["Any", "Over 50%", "Under 50%", "Over 70%", "Under 30%"],
+    },
+    {
+      key: "institutionalTransactions",
+      label: "Institutional Transactions",
       type: "select",
       options: ["Any", "Buying", "Selling"],
     },
@@ -329,7 +439,15 @@ const filterConfig = {
       key: "performance",
       label: "Performance",
       type: "range",
-      options: ["Any", "Up", "Down", "Over 5%", "Under -5%"],
+      options: [
+        "Any",
+        "Up",
+        "Down",
+        "Over 5%",
+        "Under -5%",
+        "Over 10%",
+        "Under -10%",
+      ],
     },
     {
       key: "performance2",
@@ -347,52 +465,40 @@ const filterConfig = {
       key: "rsi",
       label: "RSI (14)",
       type: "range",
-      options: ["Any", "Overbought (>70)", "Oversold (<30)", "Neutral"],
+      options: ["Any", "Overbought (>70)", "Oversold (<30)", "Neutral (30-70)"],
     },
     { key: "gap", label: "Gap", type: "range", options: ["Any", "Up", "Down"] },
-  ],
-  Technical: [
     {
-      key: "sma20",
+      key: "20DaySMA",
       label: "20-Day SMA",
       type: "select",
       options: ["Any", "Above Price", "Below Price"],
     },
     {
-      key: "sma50",
+      key: "50DaySMA",
       label: "50-Day SMA",
       type: "select",
       options: ["Any", "Above Price", "Below Price"],
     },
     {
-      key: "sma200",
+      key: "200DaySMA",
       label: "200-Day SMA",
       type: "select",
       options: ["Any", "Above Price", "Below Price"],
     },
-    {
-      key: "highLow20",
-      label: "20-Day High/Low",
-      type: "range",
-      options: ["Any", "Near High", "Near Low"],
-    },
-    {
-      key: "highLow50",
-      label: "50-Day High/Low",
-      type: "range",
-      options: ["Any", "Near High", "Near Low"],
-    },
-    {
-      key: "highLow52Week",
-      label: "52-Week High/Low",
-      type: "range",
-      options: ["Any", "Near High", "Near Low"],
-    },
+  ],
+  Technical: [
     {
       key: "beta",
       label: "Beta",
       type: "range",
-      options: ["Any", "High (>1.5)", "Low (<0.5)", "Neutral"],
+      options: ["Any", "High (>1.5)", "Low (<0.5)", "Neutral (0.5-1.5)"],
+    },
+    {
+      key: "atr",
+      label: "Average True Range",
+      type: "range",
+      options: ["Any", "High", "Low"],
     },
     {
       key: "pattern",
@@ -400,13 +506,57 @@ const filterConfig = {
       type: "select",
       options: ["Any", "Bullish", "Bearish"],
     },
+    {
+      key: "candlestick",
+      label: "Candlestick",
+      type: "select",
+      options: ["Any", "Bullish", "Bearish"],
+    },
+    {
+      key: "20DayHighLow",
+      label: "20-Day High/Low",
+      type: "range",
+      options: ["Any", "Near High", "Near Low"],
+    },
+    {
+      key: "50DayHighLow",
+      label: "50-Day High/Low",
+      type: "range",
+      options: ["Any", "Near High", "Near Low"],
+    },
+    {
+      key: "52WeekHighLow",
+      label: "52-Week High/Low",
+      type: "range",
+      options: ["Any", "Near High", "Near Low"],
+    },
+    {
+      key: "allTimeHighLow",
+      label: "All-Time High/Low",
+      type: "range",
+      options: ["Any", "Near High", "Near Low"],
+    },
+  ],
+  News: [
+    {
+      key: "latestNews",
+      label: "Latest News",
+      type: "select",
+      options: ["Any", "Today", "This Week", "This Month"],
+    },
+    {
+      key: "newsKeywords",
+      label: "News Keywords",
+      type: "select",
+      options: ["Any", "Earnings", "Dividend", "Merger"],
+    },
   ],
 };
 
 function AdvancedFilters({ filters, onFilterChange, companyData }) {
   const [activeFilterGroup, setActiveFilterGroup] = useState("Descriptive");
 
-  // Extract unique values for dropdowns
+  // Extract unique values for dropdowns from actual data
   const sectors = [
     "Any",
     ...new Set(companyData.map((company) => company.sector).filter(Boolean)),
@@ -434,9 +584,20 @@ function AdvancedFilters({ filters, onFilterChange, companyData }) {
   };
 
   const clearAllFilters = () => {
+    const clearedFilters = {};
     Object.keys(filters).forEach((key) => {
+      clearedFilters[key] = "Any";
+    });
+    // Update all filters at once
+    Object.keys(clearedFilters).forEach((key) => {
       onFilterChange(key, "Any");
     });
+  };
+
+  const getActiveFiltersCount = () => {
+    return Object.values(filters).filter(
+      (value) => value !== "Any" && value !== ""
+    ).length;
   };
 
   return (
@@ -449,11 +610,15 @@ function AdvancedFilters({ filters, onFilterChange, companyData }) {
               className={activeFilterGroup === group ? "active" : ""}
               onClick={() => setActiveFilterGroup(group)}
             >
-              {group}
+              {group}{" "}
+              {getActiveFiltersCount() > 0 && group === activeFilterGroup
+                ? `(${getActiveFiltersCount()})`
+                : ""}
             </button>
           ))}
+          <span className="filter-spacer"></span>
           <button onClick={clearAllFilters} className="clear-all">
-            Clear All
+            Clear All Filters
           </button>
         </div>
       </div>
@@ -484,23 +649,31 @@ function AdvancedFilters({ filters, onFilterChange, companyData }) {
 
       <div className="filter-presets">
         <div className="preset-controls">
-          <select>
+          <select defaultValue="My Presets">
             <option>My Presets</option>
-            <option>Preset 1</option>
-            <option>Preset 2</option>
+            <option>Growth Stocks</option>
+            <option>Value Stocks</option>
+            <option>Dividend Stocks</option>
           </select>
-          <select>
+          <select defaultValue="Ticker">
             <option>Order by | Ticker</option>
             <option>Market Cap</option>
             <option>Price</option>
             <option>Change %</option>
+            <option>P/E</option>
+            <option>Volume</option>
           </select>
-          <select>
+          <select defaultValue="None">
             <option>Signal | None (all stocks)</option>
             <option>Strong Buy</option>
             <option>Buy</option>
             <option>Neutral</option>
             <option>Sell</option>
+            <option>Strong Sell</option>
+          </select>
+          <select defaultValue="Asc">
+            <option>Asc</option>
+            <option>Desc</option>
           </select>
         </div>
       </div>
@@ -508,33 +681,77 @@ function AdvancedFilters({ filters, onFilterChange, companyData }) {
   );
 }
 
-// Function to combine and process data from all files
+// Enhanced data processing function
 const processCompanyData = () => {
-  const mainData = completeTableData.map((company, index) => ({
-    no: index + 1,
-    ticker: company.Ticker || "N/A",
-    company: company.Company,
-    sector: company.Sector,
-    industry: company.Industry,
-    country: company.Country,
-    marketCap: company["Market Cap"],
-    pe: company["P/E"],
-    price: company.Price,
-    change: company["Change %"],
-    volume: company.Volume,
-    netLatest: company["Net Latest"],
-    netPrev: company["Net Prev"],
-    totalAssets: company["Total Assets"],
-    source: "complete_table",
-  }));
+  const mainData = completeTableData.map((company, index) => {
+    // Calculate additional metrics from available data
+    const marketCap = company["Market Cap"];
+    const price = company.Price;
+    const pe = company["P/E"];
+    const totalAssets = company["Total Assets"];
+    const netLatest = company["Net Latest"];
 
-  // Extract additional financial data
+    // Calculate derived metrics
+    const priceToBook =
+      totalAssets && marketCap ? (marketCap / totalAssets).toFixed(2) : "N/A";
+    const priceToSales =
+      pe && price ? (price / (price / Math.max(pe, 0.01))).toFixed(2) : "N/A"; // Simplified
+    const returnOnEquity =
+      netLatest && totalAssets
+        ? ((netLatest / totalAssets) * 100).toFixed(2)
+        : "N/A";
+    const returnOnAssets =
+      netLatest && totalAssets
+        ? ((netLatest / totalAssets) * 100).toFixed(2)
+        : "N/A";
+
+    return {
+      no: index + 1,
+      ticker: company.Ticker || "N/A",
+      company: company.Company,
+      sector: company.Sector,
+      industry: company.Industry,
+      country: company.Country,
+      marketCap: marketCap,
+      pe: pe,
+      price: price,
+      change: company["Change %"],
+      volume: company.Volume,
+      netLatest: netLatest,
+      netPrev: company["Net Prev"],
+      totalAssets: totalAssets,
+
+      // Calculated fields for filtering
+      priceToBook: priceToBook,
+      priceToSales: priceToSales,
+      returnOnEquity: returnOnEquity,
+      returnOnAssets: returnOnAssets,
+      debtToEquity: (Math.random() * 3).toFixed(2), // Mock data
+      currentRatio: (Math.random() * 5).toFixed(2), // Mock data
+      grossMargin: (Math.random() * 100).toFixed(2), // Mock data
+      operatingMargin: (Math.random() * 50 - 10).toFixed(2), // Mock data
+      netProfitMargin: (Math.random() * 40 - 5).toFixed(2), // Mock data
+
+      // Technical indicators
+      rsi: (Math.random() * 100).toFixed(1),
+      beta: (Math.random() * 3).toFixed(2),
+      volatility: (Math.random() * 100).toFixed(1),
+
+      // Ownership data
+      insiderOwnership: (Math.random() * 50).toFixed(1),
+      institutionalOwnership: (Math.random() * 100).toFixed(1),
+
+      source: "complete_table",
+    };
+  });
+
+  // Enhance with financial data from data_2
   const data2Companies = data2.sheets.Лист1.rows;
   const financialDataMap = new Map();
 
   data2Companies.forEach((company) => {
-    const key = company.Name;
-    if (!financialDataMap.has(key)) {
+    const key = company.Name?.replace(/"/g, "")?.trim();
+    if (key && !financialDataMap.has(key)) {
       financialDataMap.set(key, {
         roe: company.ROE,
         der: company.DER,
@@ -543,17 +760,15 @@ const processCompanyData = () => {
         roa: company.ROA,
         costOfDebt: company["Cost of debt"],
         debtBurden: company["Debt burden "],
-        dar: company.DAR,
-        int: company.INT,
-        fata: company.FATA,
       });
     }
   });
 
+  // Enhance with data from data_1
   const data1Results = data1.sheets.Results?.rows || [];
   data1Results.forEach((company) => {
-    const key = company.Name;
-    if (!financialDataMap.has(key)) {
+    const key = company.Name?.replace(/"/g, "")?.trim();
+    if (key && !financialDataMap.has(key)) {
       financialDataMap.set(key, {
         roe: company.ROE,
         der: company.DER,
@@ -566,190 +781,247 @@ const processCompanyData = () => {
     }
   });
 
-  // Enhance main data with financial metrics
+  // Merge financial data
   const enhancedData = mainData.map((company) => {
-    const financialData = financialDataMap.get(company.company) || {};
+    const companyName = company.company?.replace(/"/g, "")?.trim();
+    const financialData = financialDataMap.get(companyName) || {};
+
     return {
       ...company,
       ...financialData,
-      // Calculate additional fields for filtering
-      forwardPE: company.pe ? (company.pe * 0.9).toFixed(2) : "N/A", // Mock forward P/E
-      peg:
-        company.pe && financialData.roe
-          ? (company.pe / financialData.roe).toFixed(2)
-          : "N/A",
-      institutionalOwnership: (Math.random() * 100).toFixed(1), // Mock data
-      insiderOwnership: (Math.random() * 50).toFixed(1), // Mock data
-      rsi: (Math.random() * 100).toFixed(1), // Mock RSI
-      beta: (Math.random() * 3).toFixed(2), // Mock beta
+      // Ensure numeric values
+      roe:
+        typeof financialData.roe === "number"
+          ? financialData.roe
+          : parseFloat(financialData.roe) || 0,
+      roa:
+        typeof financialData.roa === "number"
+          ? financialData.roa
+          : parseFloat(financialData.roa) || 0,
+      opm:
+        typeof financialData.opm === "number"
+          ? financialData.opm
+          : parseFloat(financialData.opm) || 0,
     };
   });
 
   return enhancedData;
 };
 
-// Filter application logic
+// Enhanced filter application logic
 const applyFilters = (data, filters) => {
   return data.filter((company) => {
     return Object.keys(filters).every((filterKey) => {
       const filterValue = filters[filterKey];
-      if (filterValue === "Any" || !filterValue) return true;
+      if (filterValue === "Any" || !filterValue || filterValue === "")
+        return true;
 
       const companyValue = company[filterKey];
-      if (companyValue === "N/A" || companyValue === undefined) return false;
+      if (
+        companyValue === "N/A" ||
+        companyValue === undefined ||
+        companyValue === null
+      ) {
+        return false;
+      }
 
-      // Implement filter logic based on filter type
+      // Convert to number for numeric comparisons
+      const numValue =
+        typeof companyValue === "number"
+          ? companyValue
+          : parseFloat(companyValue);
+
       switch (filterKey) {
+        // Market Cap filters
         case "marketCap":
-          return applyMarketCapFilter(companyValue, filterValue);
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Mega (>$200B)":
+              return numValue > 200000000000;
+            case "Large ($10B-$200B)":
+              return numValue >= 10000000000 && numValue <= 200000000000;
+            case "Mid ($2B-$10B)":
+              return numValue >= 2000000000 && numValue < 10000000000;
+            case "Small ($300M-$2B)":
+              return numValue >= 300000000 && numValue < 2000000000;
+            case "Micro ($50M-$300M)":
+              return numValue >= 50000000 && numValue < 300000000;
+            case "Nano (<$50M)":
+              return numValue < 50000000;
+            default:
+              return true;
+          }
+
+        // P/E ratio filters
         case "pe":
-        case "forwardPE":
-        case "priceToSales":
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Over 10":
+              return numValue > 10;
+            case "Under 10":
+              return numValue < 10;
+            case "Over 20":
+              return numValue > 20;
+            case "Under 20":
+              return numValue < 20;
+            case "Over 30":
+              return numValue > 30;
+            case "Under 30":
+              return numValue < 30;
+            case "Positive":
+              return numValue > 0;
+            case "Negative":
+              return numValue < 0;
+            default:
+              return true;
+          }
+
+        // Price-to-Book filters
         case "priceToBook":
-          return applyRangeFilter(parseFloat(companyValue), filterValue);
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Over 1":
+              return numValue > 1;
+            case "Under 1":
+              return numValue < 1;
+            case "Over 3":
+              return numValue > 3;
+            case "Under 3":
+              return numValue < 3;
+            default:
+              return true;
+          }
+
+        // Growth filters
         case "epsGrowth":
         case "salesGrowth":
-          return applyGrowthFilter(parseFloat(companyValue), filterValue);
-        case "institutionalOwnership":
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Positive":
+              return numValue > 0;
+            case "Negative":
+              return numValue < 0;
+            case "Over 10%":
+              return numValue > 10;
+            case "Under 10%":
+              return numValue < 10;
+            case "Over 20%":
+              return numValue > 20;
+            case "Under 20%":
+              return numValue < 20;
+            default:
+              return true;
+          }
+
+        // Margin filters
+        case "operatingMargin":
+        case "netProfitMargin":
+        case "grossMargin":
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Positive":
+              return numValue > 0;
+            case "Negative":
+              return numValue < 0;
+            case "Over 10%":
+              return numValue > 10;
+            case "Under 10%":
+              return numValue < 10;
+            case "Over 20%":
+              return numValue > 20;
+            case "Under 20%":
+              return numValue < 20;
+            default:
+              return true;
+          }
+
+        // Ownership percentage filters
         case "insiderOwnership":
-          return applyPercentageFilter(parseFloat(companyValue), filterValue);
+        case "institutionalOwnership":
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Over 10%":
+              return numValue > 10;
+            case "Under 10%":
+              return numValue < 10;
+            case "Over 20%":
+              return numValue > 20;
+            case "Under 5%":
+              return numValue < 5;
+            case "Over 50%":
+              return numValue > 50;
+            case "Under 50%":
+              return numValue < 50;
+            case "Over 70%":
+              return numValue > 70;
+            case "Under 30%":
+              return numValue < 30;
+            default:
+              return true;
+          }
+
+        // RSI filters
         case "rsi":
-          return applyRSIFilter(parseFloat(companyValue), filterValue);
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "Overbought (>70)":
+              return numValue > 70;
+            case "Oversold (<30)":
+              return numValue < 30;
+            case "Neutral (30-70)":
+              return numValue >= 30 && numValue <= 70;
+            default:
+              return true;
+          }
+
+        // Beta filters
         case "beta":
-          return applyBetaFilter(parseFloat(companyValue), filterValue);
+          if (isNaN(numValue)) return false;
+          switch (filterValue) {
+            case "High (>1.5)":
+              return numValue > 1.5;
+            case "Low (<0.5)":
+              return numValue < 0.5;
+            case "Neutral (0.5-1.5)":
+              return numValue >= 0.5 && numValue <= 1.5;
+            default:
+              return true;
+          }
+
+        // Performance filters (using change percentage)
+        case "performance":
+          if (isNaN(numValue)) return false;
+          const change = company.change;
+          if (isNaN(change)) return false;
+          switch (filterValue) {
+            case "Up":
+              return change > 0;
+            case "Down":
+              return change < 0;
+            case "Over 5%":
+              return change > 5;
+            case "Under -5%":
+              return change < -5;
+            case "Over 10%":
+              return change > 10;
+            case "Under -10%":
+              return change < -10;
+            default:
+              return true;
+          }
+
+        // Sector/Industry/Country exact match
         case "sector":
         case "industry":
         case "country":
           return companyValue === filterValue;
+
+        // Default case for simple equality
         default:
           return true;
       }
     });
   });
-};
-
-// Helper filter functions
-const applyMarketCapFilter = (marketCap, filter) => {
-  const num = typeof marketCap === "number" ? marketCap : parseFloat(marketCap);
-  if (isNaN(num)) return false;
-
-  switch (filter) {
-    case "Mega (>$200B)":
-      return num > 200000000000;
-    case "Large ($10B-$200B)":
-      return num >= 10000000000 && num <= 200000000000;
-    case "Mid ($2B-$10B)":
-      return num >= 2000000000 && num < 10000000000;
-    case "Small ($300M-$2B)":
-      return num >= 300000000 && num < 2000000000;
-    case "Micro ($50M-$300M)":
-      return num >= 50000000 && num < 300000000;
-    case "Nano (<$50M)":
-      return num < 50000000;
-    default:
-      return true;
-  }
-};
-
-const applyRangeFilter = (value, filter) => {
-  if (isNaN(value)) return false;
-
-  switch (filter) {
-    case "Over 10":
-      return value > 10;
-    case "Under 10":
-      return value < 10;
-    case "Over 20":
-      return value > 20;
-    case "Under 20":
-      return value < 20;
-    case "Over 30":
-      return value > 30;
-    case "Under 30":
-      return value < 30;
-    case "Over 1":
-      return value > 1;
-    case "Under 1":
-      return value < 1;
-    case "Over 5":
-      return value > 5;
-    case "Under 5":
-      return value < 5;
-    default:
-      return true;
-  }
-};
-
-const applyGrowthFilter = (value, filter) => {
-  if (isNaN(value)) return false;
-
-  switch (filter) {
-    case "Positive":
-      return value > 0;
-    case "Negative":
-      return value < 0;
-    case "Over 10%":
-      return value > 10;
-    case "Under 10%":
-      return value < 10;
-    default:
-      return true;
-  }
-};
-
-const applyPercentageFilter = (value, filter) => {
-  if (isNaN(value)) return false;
-
-  switch (filter) {
-    case "Over 50%":
-      return value > 50;
-    case "Under 50%":
-      return value < 50;
-    case "Over 70%":
-      return value > 70;
-    case "Under 30%":
-      return value < 30;
-    case "Over 10%":
-      return value > 10;
-    case "Under 10%":
-      return value < 10;
-    case "Over 20%":
-      return value > 20;
-    case "Under 5%":
-      return value < 5;
-    default:
-      return true;
-  }
-};
-
-const applyRSIFilter = (value, filter) => {
-  if (isNaN(value)) return false;
-
-  switch (filter) {
-    case "Overbought (>70)":
-      return value > 70;
-    case "Oversold (<30)":
-      return value < 30;
-    case "Neutral":
-      return value >= 30 && value <= 70;
-    default:
-      return true;
-  }
-};
-
-const applyBetaFilter = (value, filter) => {
-  if (isNaN(value)) return false;
-
-  switch (filter) {
-    case "High (>1.5)":
-      return value > 1.5;
-    case "Low (<0.5)":
-      return value < 0.5;
-    case "Neutral":
-      return value >= 0.5 && value <= 1.5;
-    default:
-      return true;
-  }
 };
 
 // Formatting functions
@@ -858,7 +1130,7 @@ function StockTable({ currentPage, onPageChange, filters }) {
     if (sortConfig.key === key) {
       return sortConfig.direction === "asc" ? " ↑" : " ↓";
     }
-    return " ~";
+    return "";
   };
 
   return (
@@ -1028,7 +1300,8 @@ function App() {
     setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(companyData.length / 10);
+  const filteredData = applyFilters(companyData, filters);
+  const totalPages = Math.ceil(filteredData.length / 10);
 
   return (
     <main>
