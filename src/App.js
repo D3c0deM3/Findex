@@ -413,9 +413,9 @@ function StockTable({ currentPage, onPageChange }) {
     }
   }, [searchTerm]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-  const [sectorFilter, setSectorFilter] = useState("All");
-  const [industryFilter, setIndustryFilter] = useState("All");
-  const [countryFilter, setCountryFilter] = useState("All");
+  const [sectorFilter] = useState("All");
+  const [industryFilter] = useState("All");
+  const [countryFilter] = useState("All");
 
   useEffect(() => {
     // Process data when component mounts
@@ -427,16 +427,16 @@ function StockTable({ currentPage, onPageChange }) {
     };
   }, []);
 
-  // Get unique values for filters
-  const sectors = [
-    ...new Set(companyData.map((company) => company.sector)),
-  ].filter(Boolean);
-  const industries = [
-    ...new Set(companyData.map((company) => company.industry)),
-  ].filter(Boolean);
-  const countries = [
-    ...new Set(companyData.map((company) => company.country)),
-  ].filter(Boolean);
+  // // Get unique values for filters
+  // const sectors = [
+  //   ...new Set(companyData.map((company) => company.sector)),
+  // ].filter(Boolean);
+  // const industries = [
+  //   ...new Set(companyData.map((company) => company.industry)),
+  // ].filter(Boolean);
+  // const countries = [
+  //   ...new Set(companyData.map((company) => company.country)),
+  // ].filter(Boolean);
 
   // Filter data based on search term and filters
   const filteredData = companyData.filter((company) => {
